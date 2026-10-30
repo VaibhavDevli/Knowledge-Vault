@@ -732,7 +732,7 @@ function NodePanel({ doc, allDocs, onClose, navigate, semanticEdgeMap }) {
       </div>
 
       <div className="kg-panel-actions">
-        <button className="kg-btn-view" onClick={() => window.open(`http://localhost:5000/uploads/${doc.filename}`, "_blank")}>
+        <button className="kg-btn-view" onClick={() => window.open(`https://knowledge-vault-backend-de8j.onrender.com/uploads/${doc.filename}`, "_blank")}>
           <Icons.Eye /> View File
         </button>
         <button className="kg-btn-ai" onClick={handleExplainWithAI}>

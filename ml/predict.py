@@ -163,5 +163,6 @@ def retrain():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    print("🚀 ML Prediction Server starting on http://localhost:5001")
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    port = int(os.environ.get("PORT", 5001))
+    print(f"🚀 ML Prediction Server starting on port {port}")
+    app.run(host='0.0.0.0', port=port, debug=False)

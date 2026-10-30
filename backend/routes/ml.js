@@ -7,38 +7,49 @@
 
 const express = require('express');
 const router  = express.Router();
-const http    = require('http');
 const { protect } = require('../middleware/auth');
 const Document    = require('../models/Document');
+const http = require('http');
+const https = require('https');
 
-const ML_HOST = process.env.ML_HOST || 'localhost';
-const ML_PORT = process.env.ML_PORT || 5001;
+const ML_URL = process.env.ML_URL || 'http://localhost:5001';
+
 
 // ─── Helper: call Python microservice ────────────────────────────────────────
 function callML(path, method = 'GET', body = null) {
   return new Promise((resolve, reject) => {
-    const data    = body ? JSON.stringify(body) : null;
+    const data = body ? JSON.stringify(body) : null;
+    const url = new URL(path, ML_URL);
+
+    const client = url.protocol === 'https:' ? https : http;
+
     const options = {
-      hostname: ML_HOST,
-      port:     ML_PORT,
-      path,
+      hostname: url.hostname,
+      port: url.port || undefined,
+      path: url.pathname + url.search,
       method,
       headers: {
-        'Content-Type':   'application/json',
+        'Content-Type': 'application/json',
         'Content-Length': data ? Buffer.byteLength(data) : 0,
       },
     };
 
-    const req = http.request(options, (res) => {
+    const req = client.request(options, (res) => {
       let raw = '';
+
       res.on('data', chunk => raw += chunk);
+
       res.on('end', () => {
-        try   { resolve({ status: res.statusCode, data: JSON.parse(raw) }); }
-        catch { resolve({ status: res.statusCode, data: { raw } }); }
+        try {
+          resolve({ status: res.statusCode, data: JSON.parse(raw) });
+        } catch {
+          resolve({ status: res.statusCode, data: { raw } });
+        }
       });
     });
 
-    req.on('error', err => reject(err));
+    req.on('error', reject);
+
     if (data) req.write(data);
     req.end();
   });

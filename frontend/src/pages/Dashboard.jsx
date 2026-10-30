@@ -15,7 +15,9 @@ import fileIcon     from "../assets/icons/pages.png"
 import walletIcon   from "../assets/icons/wallet-passes-app.png"
 import logo from '../assets/logo.png'
 
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`
+})
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`

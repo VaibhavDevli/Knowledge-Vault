@@ -8,7 +8,9 @@ import yodaIcon     from "../assets/icons/icons8-baby-yoda-50.png";
 import empireIcon   from "../assets/icons/icons8-empire-50.png";
 import fileIcon     from "../assets/icons/pages.png";
 
-const api = axios.create({ baseURL: "/api" });
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL}/api`
+});
 api.interceptors.request.use((c) => {
   const t = localStorage.getItem("token");
   if (t) c.headers.Authorization = `Bearer ${t}`;

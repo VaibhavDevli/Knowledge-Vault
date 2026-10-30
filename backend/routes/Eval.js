@@ -41,7 +41,7 @@ router.post("/run", protect, async (req, res) => {
 
     // ── GEMINI CALL 1: Generate 3 test queries ────────────────────────────────
     const q1Response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.8-flash",
       contents:
         `You are a RAG evaluation expert. Given this document library:\n${docList}\n\n` +
         `Generate exactly 3 test questions. Each should test a DIFFERENT scenario:\n` +
@@ -98,7 +98,7 @@ router.post("/run", protect, async (req, res) => {
       `["answer to query 1","answer to query 2","answer to query 3"]`;
 
     const q2Response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.8-flash",
       contents: batchAnswerPrompt,
     });
 
@@ -131,7 +131,7 @@ router.post("/run", protect, async (req, res) => {
       `[{"retrieval_accuracy":8,"answer_relevance":7,"groundedness":9,"completeness":7,"overall":8,"feedback":"brief comment"},...]`;
 
     const q3Response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.8-flash",
       contents: batchScorePrompt,
     });
 

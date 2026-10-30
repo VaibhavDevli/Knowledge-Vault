@@ -11,7 +11,7 @@ const ai = new GoogleGenAI({});
 const extractConcepts = async (content, fileType) => {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.8-flash",
       contents: `You are a knowledge graph builder. Analyze the following text from a ${fileType} document.
 
 Extract 5-12 key concepts. For each concept provide:

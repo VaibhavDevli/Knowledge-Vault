@@ -171,7 +171,10 @@ export default function Register() {
     setError("");
 
     try {
-      const res = await axios.post("/api/auth/register", form);
+      const res = await axios.post(
+  `${import.meta.env.VITE_API_URL}/api/auth/register`,
+  form
+);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem(
         "user",

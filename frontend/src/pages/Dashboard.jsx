@@ -63,7 +63,7 @@ const fmt = {
 
 // ─── File Viewer ──────────────────────────────────────────────────────────────
 function FileViewer({ doc }) {
-  const fileUrl = `https://knowledge-vault-backend-de8j.onrender.com/uploads/${doc.filename}`
+  const fileUrl = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`;
   if (doc.type === 'pdf') return (
     <div className="viewer-iframe-wrap">
       <iframe src={`${fileUrl}#toolbar=1&navpanes=0&scrollbar=1`} title={doc.title} />
@@ -133,11 +133,12 @@ function DocModal({ doc, onClose, onDelete, defaultTab = 'view' }) {
     try { await api.delete(`/documents/${doc._id}`) } catch {}
     onDelete(doc._id); onClose()
   }
-  const handleDownload = () => {
-    const a = document.createElement('a')
-    a.a.href = `https://knowledge-vault-backend-de8j.onrender.com/uploads/${doc.filename}`
-    a.download = doc.title; a.click()
-  }
+ const handleDownload = () => {
+  const a = document.createElement('a')
+  a.href = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`
+  a.download = doc.title
+  a.click()
+}
 
   return (
     <div className="modal-overlay" onClick={onClose}>

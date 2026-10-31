@@ -1,4 +1,5 @@
 const express = require("express");
+const cloudinary = require("../config/cloudinary");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
@@ -255,6 +256,10 @@ router.post("/upload", protect, upload.single("file"), async (req, res) => {
 
     console.log(`Processing ${fileType}: ${originalname}`);
     const content = await extractContent(filepath, mimetype);
+    const cloudinaryResult = await cloudinary.uploader.upload(filepath, {
+      resource_type: "auto",
+      folder: "knowledge-vault",
+    });
     console.log(`Content extracted (${content.length} chars)`);
 
     let summary = `${fileType} file uploaded.`;
@@ -346,11 +351,14 @@ router.post("/upload", protect, upload.single("file"), async (req, res) => {
     }
 
     const doc = await Document.create({
+      filename: req.file.filename,
+      filepath: "",
+      fileUrl: cloudinaryResult.secure_url,
+      cloudinaryPublicId: cloudinaryResult.public_id,
       user: req.user._id,
       title: titleClean,
+      cloudinaryResourceType: cloudinaryResult.resource_type,
       type: fileType,
-      filename: req.file.filename,
-      filepath,
       content,
       summary,
       keywords,
@@ -360,6 +368,10 @@ router.post("/upload", protect, upload.single("file"), async (req, res) => {
       subject,
       subjectConfidence,
     });
+
+    if (fs.existsSync(filepath)) {
+  fs.unlinkSync(filepath);
+}
 
     const docObj = doc.toObject();
     delete docObj.embedding;
@@ -767,8 +779,13 @@ router.delete("/:id", protect, async (req, res) => {
   try {
     const doc = await Document.findOne({ _id: req.params.id, user: req.user._id });
     if (!doc) return res.status(404).json({ message: "Document not found" });
-    const fs = require("fs");
-    if (doc.filepath && fs.existsSync(doc.filepath)) fs.unlinkSync(doc.filepath);
+    if (doc.cloudinaryPublicId) {
+  await cloudinary.uploader.destroy(doc.cloudinaryPublicId, {
+    resource_type: doc.cloudinaryResourceType || "raw",
+  });
+} else if (doc.filepath && fs.existsSync(doc.filepath)) {
+  fs.unlinkSync(doc.filepath);
+}
     await Document.deleteOne({ _id: doc._id });
     res.json({ message: "Deleted successfully" });
   } catch (err) {

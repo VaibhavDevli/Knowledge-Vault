@@ -46,7 +46,7 @@
 //
 // // ─── File Viewer ──────────────────────────────────────────────────────────────
 // function FileViewer({ doc }) {
-//   const fileUrl = `http://localhost:5000/uploads/${doc.filename}`
+//   const fileUrl = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`;
 //
 //   if (doc.type === 'pdf') {
 //     return (
@@ -143,7 +143,7 @@
 //
 //   const handleDownload = () => {
 //     const a = document.createElement('a')
-//     a.href = `http://localhost:5000/uploads/${doc.filename}`
+//     a.href = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`;
 //     a.download = doc.title; a.click()
 //   }
 //

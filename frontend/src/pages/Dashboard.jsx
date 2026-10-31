@@ -64,6 +64,8 @@ const fmt = {
 // ─── File Viewer ──────────────────────────────────────────────────────────────
 function FileViewer({ doc }) {
   const fileUrl = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`;
+  console.log("Document URL:", doc.fileUrl);
+console.log("Viewer URL:", fileUrl);
   if (doc.type === 'pdf') return (
     <div className="viewer-iframe-wrap">
       <iframe src={`${fileUrl}#toolbar=1&navpanes=0&scrollbar=1`} title={doc.title} />

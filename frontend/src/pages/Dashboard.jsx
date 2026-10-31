@@ -63,7 +63,7 @@ const fmt = {
 
 // ─── File Viewer ──────────────────────────────────────────────────────────────
 function FileViewer({ doc }) {
-  const fileUrl = doc.fileUrl || `${import.meta.env.VITE_API_URL}/uploads/${doc.filename}`;
+  const fileUrl = doc.fileUrl;
   console.log("Document URL:", doc.fileUrl);
 console.log("Viewer URL:", fileUrl);
   if (doc.type === 'pdf') return (
